@@ -67,7 +67,7 @@ public class GameManager : MonoBehaviour
     {
         if (finalDoor.IsUnlocked() && endzone.AreKeysCollected())
         {
-            finalDoor.PlayAnimation();
+            finalDoor.OpenDoor();
         }
     }
 
@@ -77,6 +77,7 @@ public class GameManager : MonoBehaviour
         endzone.ResetEndzone();
         foreach (Key key in keys) key.ResetKey();
         player.ResetPlayer();
+        finalDoor.CloseDoor();
     }
 
 }

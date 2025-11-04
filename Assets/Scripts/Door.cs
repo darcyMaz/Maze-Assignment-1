@@ -25,13 +25,15 @@ public class Door : MonoBehaviour
         return canOpen;
     }
 
-    public void PlayAnimation()
+    public void OpenDoor()
     {
+        myAnimator.SetBool("isGameDone", false);
         myAnimator.SetBool("doorCanOpen", true);
     }
 
-    public void ResetAnimation()
+    public void CloseDoor()
     {
-        
+        myAnimator.SetBool("isGameDone", true);
+        myAnimator.SetBool("doorCanOpen", false);
     }
 }

@@ -25,6 +25,7 @@ public class Endzone : MonoBehaviour
     public void ResetEndzone()
     {
         areAllKeysCollected = false;
+        isGameOver = false;
     }   
     
     // Called by GM when all keys are collected.
