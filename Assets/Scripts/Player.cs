@@ -15,7 +15,7 @@ public class Player : MonoBehaviour
     Vector3 direction = Vector3.zero;
     float gravity = -9.8f;
 
-    // Boolean reset_pos_lock;
+    Boolean reset_pos_lock;
 
     void Start()
     {
@@ -32,7 +32,7 @@ public class Player : MonoBehaviour
         init_health = 5;
         health = init_health;
 
-        // reset_pos_lock = false;
+        reset_pos_lock = false;
     }
 
     
@@ -51,42 +51,20 @@ public class Player : MonoBehaviour
             transform.Rotate(new Vector3(0, 1, 0), rotation_speed);
         }
 
-
-        
         // POSITION TRANSFORMATION
-        Vector3 move_vector = new Vector3(0, 0, 0); //new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-        if (Input.GetKey(KeyCode.W))
-        {
-            move_vector += new Vector3(0, 0, 1);
-        }
-        if (Input.GetKey(KeyCode.S))
-        {
-            move_vector += new Vector3(0, 0, -1);
-        }
-        if (Input.GetKey(KeyCode.A))
-        {
-            move_vector += new Vector3(-1, 0, 0);
-        }
-        if (Input.GetKey(KeyCode.D))
-        {
-            move_vector += new Vector3(1, 0, 0);
-        }
-        
-        
-        cc.Move(transform.rotation * move_vector * move_speed * Time.deltaTime);
+        direction = transform.TransformDirection(new Vector3(Input.GetAxis("Vertical") * move_speed, gravity, Input.GetAxis("Horizontal")));
+        cc.Move(direction * Time.deltaTime);
 
-        //direction = transform.TransformDirection(new Vector3(Input.GetAxis("Horizontal") * move_speed, gravity, Input.GetAxis("Vertical") * move_speed));
-        //if (!reset_pos_lock) cc.Move(transform.rotation * direction * Time.deltaTime);
+    }
 
-        // reset_pos_lock = false;
-
-        //if (reset_pos_lock)
-        //{
-        //   transform.position = start_pos; // this does not
-        //    transform.rotation = Quaternion.identity;  // this works
-        //    reset_pos_lock = false;
-        //}
-
+    void FixedUpdate()
+    {
+        if (reset_pos_lock) 
+        { 
+            transform.position = start_pos; 
+            transform.rotation = Quaternion.identity;
+            reset_pos_lock = false; 
+        }
     }
 
     /*
@@ -114,9 +92,13 @@ public class Player : MonoBehaviour
     public void ResetPosition()
     {
         // while (reset_pos_lock) ;
-        //reset_pos_lock = true;
+        reset_pos_lock = true;
 
-        transform.position = start_pos;
+        // cc.velocity = Vector3.zero;
+        // transform.position = start_pos;
+
+
+
         // Debug.Log("Inside reset position in player");
 
         

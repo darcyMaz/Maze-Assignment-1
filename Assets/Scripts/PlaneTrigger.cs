@@ -12,11 +12,11 @@ public class PlaneTrigger : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        door.CanOpen();
+        door.Unlock();
     }
 
     private void OnTriggerExit(Collider other)
     {
-        door.CannotOpen();
+        door.Lock();
     }
 }

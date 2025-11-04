@@ -44,6 +44,10 @@ public class GameManager : MonoBehaviour
             endzone.AllKeysCollected();
         }
 
+        // It would be more efficient to have an Animation Manager I think.
+        // Check if the final door can be opened.
+        FinalDoorCheck();
+
         // If you reach the EndZone having collected all of the keys, you win!
         if (endzone.IsGameOver())
         {
@@ -56,6 +60,14 @@ public class GameManager : MonoBehaviour
             Debug.Log("The player's health has reached zero, that means you died :(");
             Debug.Log("The game will now be reset from the start.");
             ResetGame();
+        }
+    }
+
+    void FinalDoorCheck()
+    {
+        if (finalDoor.IsUnlocked() && endzone.AreKeysCollected())
+        {
+            finalDoor.PlayAnimation();
         }
     }
 

@@ -12,17 +12,26 @@ public class Door : MonoBehaviour
         canOpen = false;
     }
 
-    public void CanOpen()
+    public void Unlock()
     {
         canOpen = true;
     }
-    public void CannotOpen()
+    public void Lock()
     {
         canOpen = false;
+    }
+    public Boolean IsUnlocked()
+    {
+        return canOpen;
     }
 
     public void PlayAnimation()
     {
         myAnimator.SetBool("doorCanOpen", true);
+    }
+
+    public void ResetAnimation()
+    {
+        
     }
 }
