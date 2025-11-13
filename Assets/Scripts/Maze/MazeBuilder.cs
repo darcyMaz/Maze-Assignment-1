@@ -85,6 +85,9 @@ public class MazeBuilder : MonoBehaviour
 
     }
 
+    // I can see that this isn't quite working based on the result.
+    // All walls should be doubled up. But they are not.
+    // Ok yeah it's bevause I did not apply the rotation!
     public void BuildMaze()
     {
         // These are the wall specifications for the generated maze.
@@ -104,7 +107,7 @@ public class MazeBuilder : MonoBehaviour
         //  Sum: Sixteen possible orientations, lucky, I can use binary.
 
         // This is the maze. Each coordinate in the maze has a 4 bit binary as a string representing one of 16 tile types of the maze.
-        MazeDictionary MazeAsCoords = TranslateWallsToBinary(MazeWallSpecs);
+        //MazeDictionary MazeAsCoords = TranslateWallsToBinary(MazeWallSpecs);
 
 
 
@@ -113,7 +116,7 @@ public class MazeBuilder : MonoBehaviour
         // Problem here: the int[] in MazeAsCoords are unique objects as opposed to being based on/
         // I can set the hash function actually wait
 
-        SpawnInMaze(MazeAsCoords);
+        //SpawnInMaze(MazeAsCoords);
     }
 
     // Returns a dictionary where the int[] key is the coordinates in the maze and the string is a four digit binary code representing a tile type and orientation.
@@ -139,16 +142,13 @@ public class MazeBuilder : MonoBehaviour
                 string BinaryToAdd = "";
 
                 // 1) Top wall
-                BinaryToAdd += mazeWallSpecs[0][col_index][row_index];
+                BinaryToAdd += mazeWallSpecs[1][col_index][row_index];
                 // 2) Right Wall
-                BinaryToAdd += mazeWallSpecs[1][row_index][col_index + 1];
+                BinaryToAdd += mazeWallSpecs[0][row_index][col_index + 1];
                 // 3) Bottom Wall
-                BinaryToAdd += mazeWallSpecs[0][col_index][row_index + 1];
+                BinaryToAdd += mazeWallSpecs[1][col_index][row_index + 1];
                 // 4) Left Wall
-                BinaryToAdd += mazeWallSpecs[1][row_index][col_index];
-
-                // Tuple<int,int> NewCoords = row_index, col_index;
-                //Tuple<int,int> NewCoords = (row_index, col_index);
+                BinaryToAdd += mazeWallSpecs[0][row_index][col_index];
 
                 CoordsToBinary.Add(new Tuple<int,int> (row_index, col_index), BinaryToAdd);
             }
@@ -166,20 +166,18 @@ public class MazeBuilder : MonoBehaviour
             //Debug.Log("All coords, before SpawnInMaze(): " + coord.Key[0] + ":" + coord.Key[1] + ". Binary: " + coord.Value);
         }
 
+        // For each cell in the maze
         for (int row_index = 0; row_index < MazeSize; row_index++)
         {
             for (int col_index = 0; col_index < MazeSize; col_index++)
             {
-                //int[] currCoords = {row_index, col_index};
-
-
-                // Debug.Log("CurrCoords: " + currCoords[0] + ":" + currCoords[1]);
-
-
-
+                // Spawn in a tile corresponding to that cell's wall setup.
                 string binary_ = mazeAsCoords[new Tuple<int,int> (row_index,col_index)];
                 int binAsDecimal = StrBinaryToDecimal(binary_);
                 Debug.Log(binAsDecimal);
+
+                GameObject EmptyParent = new GameObject();
+                EmptyParent.name = "Tile: (" + row_index + ", " + col_index + ")";
 
                 GameObject CurrentTile = TileGameObjects[binAsDecimal];
 
@@ -189,7 +187,11 @@ public class MazeBuilder : MonoBehaviour
                     new Vector3(  (row_index ) * TileSize,   0, (col_index) * TileSize), 
                     Quaternion.identity
                 );
-                tile.transform.parent = GameObject.Find("Maze").transform;
+                
+                tile.transform.parent = GameObject.Find(EmptyParent.name).transform;
+                EmptyParent.transform.parent = GameObject.Find("Maze").transform;
+
+                EmptyParent.transform.Rotate(0, TileRotations[binAsDecimal], 0);
             }
         }
     }
@@ -251,18 +253,6 @@ public class MazeBuilder : MonoBehaviour
             }
             return true;
         }
-
-
-        private bool CompareArrays(int[] a, int[] b)
-        {
-            if (a.Length != b.Length) { return false; }
-            for (int index = 0; index<a.Length; index++)
-            {
-                if (a[index] != b[index]) return false;
-            }
-            return true;
-        }
-
     }
 
 }
