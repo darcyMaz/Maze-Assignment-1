@@ -163,9 +163,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e191c3a86c7c947409ab86a634ce0360, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MazeBuilder
-  MazeSize: 5
+  MazeSize: 3
   TileSize: 1.48
-  FullTile: {fileID: 6541177317393059098, guid: 1f89fd6780bfbe549a0b067c9aa211cd, type: 3}
+  Full: {fileID: 6541177317393059098, guid: 1f89fd6780bfbe549a0b067c9aa211cd, type: 3}
+  Corner: {fileID: 8785230703934096582, guid: 03baefe4602f38f43be3f7ac92d5b3a7, type: 3}
+  Split: {fileID: 27565833510661402, guid: 470823ab7902dfc4ab302ceb0a3a5b0f, type: 3}
+  Forward: {fileID: 2124771433190580994, guid: ec89d3c45e9da7e43bd2594360ba5a03, type: 3}
+  Empty: {fileID: 54244685292195983, guid: 1c12158d5bb6c5a4ea066d7a4ec93317, type: 3}
+  End: {fileID: 5171264898902911, guid: 25e3c7aae71548541b01bfb8ad6800ea, type: 3}
 --- !u!1 &1009273500
 GameObject:
   m_ObjectHideFlags: 0
