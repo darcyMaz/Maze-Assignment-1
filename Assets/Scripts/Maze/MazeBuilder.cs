@@ -42,6 +42,12 @@ public class MazeBuilder : MonoBehaviour
         TileGameObjects = new GameObject[16];
         TileRotations = new float[16];
 
+        // 0001 returned 8 instead of 1
+        // 1001 correct
+        // 1010 returned 5 instead of 10
+        // 1101 returned 11 instead of 13
+        // 
+
         // These values are not random.
         TileGameObjects[0] = Empty;
         TileRotations[0] = 0;
@@ -107,7 +113,7 @@ public class MazeBuilder : MonoBehaviour
         //  Sum: Sixteen possible orientations, lucky, I can use binary.
 
         // This is the maze. Each coordinate in the maze has a 4 bit binary as a string representing one of 16 tile types of the maze.
-        //MazeDictionary MazeAsCoords = TranslateWallsToBinary(MazeWallSpecs);
+        MazeDictionary MazeAsCoords = TranslateWallsToBinary(MazeWallSpecs);
 
 
 
@@ -116,7 +122,7 @@ public class MazeBuilder : MonoBehaviour
         // Problem here: the int[] in MazeAsCoords are unique objects as opposed to being based on/
         // I can set the hash function actually wait
 
-        //SpawnInMaze(MazeAsCoords);
+        SpawnInMaze(MazeAsCoords);
     }
 
     // Returns a dictionary where the int[] key is the coordinates in the maze and the string is a four digit binary code representing a tile type and orientation.
@@ -161,10 +167,10 @@ public class MazeBuilder : MonoBehaviour
 
     private void SpawnInMaze(Dictionary<Tuple<int,int>, string> mazeAsCoords)
     {
-        foreach (KeyValuePair<Tuple<int,int>, string> coord in mazeAsCoords)
-        {
+        //foreach (KeyValuePair<Tuple<int,int>, string> coord in mazeAsCoords)
+        //{
             //Debug.Log("All coords, before SpawnInMaze(): " + coord.Key[0] + ":" + coord.Key[1] + ". Binary: " + coord.Value);
-        }
+        //}
 
         // For each cell in the maze
         for (int row_index = 0; row_index < MazeSize; row_index++)
@@ -174,10 +180,6 @@ public class MazeBuilder : MonoBehaviour
                 // Spawn in a tile corresponding to that cell's wall setup.
                 string binary_ = mazeAsCoords[new Tuple<int,int> (row_index,col_index)];
                 int binAsDecimal = StrBinaryToDecimal(binary_);
-                Debug.Log(binAsDecimal);
-
-                GameObject EmptyParent = new GameObject();
-                EmptyParent.name = "Tile: (" + row_index + ", " + col_index + ")";
 
                 GameObject CurrentTile = TileGameObjects[binAsDecimal];
 
@@ -187,11 +189,13 @@ public class MazeBuilder : MonoBehaviour
                     new Vector3(  (row_index ) * TileSize,   0, (col_index) * TileSize), 
                     Quaternion.identity
                 );
-                
-                tile.transform.parent = GameObject.Find(EmptyParent.name).transform;
-                EmptyParent.transform.parent = GameObject.Find("Maze").transform;
 
-                EmptyParent.transform.Rotate(0, TileRotations[binAsDecimal], 0);
+                Debug.Log(row_index+":"+col_index+" - "+tile.name + " " + TileRotations[binAsDecimal] + " " + binary_);
+
+                // Debug.Log("Remember to change the name of Maze to Maze1, Maze2, Maze3");
+                tile.name = "Maze Tile @ " + row_index+":"+col_index;
+                tile.transform.parent = GameObject.Find("Maze").transform;
+                tile.transform.Rotate(0, TileRotations[binAsDecimal], 0);
             }
         }
     }
@@ -207,7 +211,7 @@ public class MazeBuilder : MonoBehaviour
 
         for (int unit = 0; unit<bin.Length; unit++)
         {
-            if (bin[unit] == '1') decimalReturn += (int) Mathf.Pow(2,unit);
+            if (bin[unit] == '1') decimalReturn += (int) Mathf.Pow(2,(bin.Length - 1) - unit);
         }
 
         return decimalReturn;
