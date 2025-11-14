@@ -94,6 +94,8 @@ public class MazeBuilder : MonoBehaviour
         TileRotations[14] = 90;
         TileGameObjects[15] = Full;
         TileRotations[15] = 0;
+
+        BuildMaze();
     }
 
     // Update is called once per frame
@@ -205,7 +207,7 @@ public class MazeBuilder : MonoBehaviour
                     CulDuSacs.Add( new Tuple<GameObject,int> (tile, StrBinaryToDecimal(binary_)));
                 }
             }
-        }
+        } 
 
 
         // Finally, this bit does TWO things.
@@ -213,15 +215,15 @@ public class MazeBuilder : MonoBehaviour
         // 2) Grabs a random coordinate for the spawn point, makes sure it is of sufficient distance from the end.
 
         // Randomly select a cul de sac, get its position, delete it, and then replace it with an end tile.
-        System.Random choose_cds = new System.Random();
+        System.Random choose = new System.Random(); 
         // Get the index at random.
-        int ToReplace = choose_cds.Next(CulDuSacs.Count);
+        int ToReplace = choose.Next(CulDuSacs.Count);
         // Grab the Tile, angle Tuple from the array.
         Tuple<GameObject, int> GOandAngle = (Tuple<GameObject,int>) CulDuSacs[ToReplace];
         // Get the position of the tile.
         Vector3 EndPosition = GOandAngle.Item1.transform.position;
         // Destroy the tile.
-        GameObject TileToDestroy = (GameObject) GOandAngle.Item1;
+        GameObject TileToDestroy = (GameObject) GOandAngle.Item1; 
         GameObject.Destroy( TileToDestroy );
         // Replace it with a tile for the end of the maze.
         GameObject EndTile = Instantiate
@@ -236,8 +238,8 @@ public class MazeBuilder : MonoBehaviour
         for (int while_i = 0; while_i < 4*Mathf.Pow(MazeSize, MazeSize) ; while_i++)
         {
             // Grab a random coordinate.
-            int rand_x = choose_cds.Next(MazeSize);
-            int rand_z = choose_cds.Next(MazeSize);
+            int rand_x = choose.Next(MazeSize);
+            int rand_z = choose.Next(MazeSize);
             // Calc distance between it and end.
             float distance = Mathf.Sqrt( Mathf.Pow(EndTile.transform.position.x - rand_x,2) + Mathf.Pow(EndTile.transform.position.z - rand_z, 2));
             // If it is larger than or equal to half the crow fly distance then keep it and break.
@@ -247,6 +249,8 @@ public class MazeBuilder : MonoBehaviour
                 break;
             }
         }
+
+        Debug.Log(StartingPoint);
 
     }
 
