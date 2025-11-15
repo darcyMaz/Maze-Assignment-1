@@ -53,6 +53,8 @@ public class MazeEntrance : MonoBehaviour
 
     public void OpenDoor()
     {
+        if (isOpen) return;
+
         myAnimator.SetBool("doorClose", false);
         myAnimator.SetBool("doorOpen", true);
         isTransitioning = true;
@@ -61,6 +63,8 @@ public class MazeEntrance : MonoBehaviour
 
     public void CloseDoor()
     {
+        if (!isOpen) return;
+
         myAnimator.SetBool("doorOpen", false);
         myAnimator.SetBool("doorClose", true);
         isTransitioning = true;

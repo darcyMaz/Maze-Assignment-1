@@ -14,12 +14,12 @@ public class MazeGenerator
     int[][] horizontal_walls;
 
     private int MazeSize;
-    private bool isMazeGenerated;
+    // private bool isMazeGenerated;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public MazeGenerator(int mazeSize)
     {
-        isMazeGenerated = false;
+        // isMazeGenerated = false;
         MazeSize = mazeSize;
 
         // For maze generation.
@@ -94,7 +94,7 @@ public class MazeGenerator
         // Reset the maze generation fields. The stack is empty, the isVisitedGrid is all zeros, the walls are all set to zero.
         ClearMaze();
         // Use the generation algorithm to make a maze if the maze hasn't been generated yet.
-        if (!isMazeGenerated) GenerateMaze();
+        GenerateMaze();
         // Return the maze in the form of an array holding the wall specifications.
         int[][][] toReturn = new int[2][][];
         toReturn[0] = vertical_walls;

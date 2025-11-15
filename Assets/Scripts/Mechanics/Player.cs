@@ -27,7 +27,7 @@ public class Player : MonoBehaviour
         move_speed = 20f;
 
         // Arbitrary rotation speed.
-        rotation_speed = 0.6f;
+        rotation_speed = 1.4f;
 
         /*
         // Set health

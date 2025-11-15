@@ -4,17 +4,14 @@ public class EndGateTrigger : MonoBehaviour
 {
     public EndGate eg;
 
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void OnTriggerStay(Collider other)
     {
-        
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        // sets the bool of the animation for EndGate
         eg.OpenAnimation();
     }
+    private void OnTriggerExit(Collider other)
+    {
+        eg.TryCloseAnimation();
+    }
+
 
 }

@@ -29,12 +29,14 @@ public class MazeBuilder : MonoBehaviour
     public int MazeNumber;
     public int MazeSize;
     public float TileSize;
+    public float Scale;
 
     private Vector3 ParentPosition;
 
     private string MazeName;
     private MazeGenerator MazeGenerator;
     private Vector3 StartingPoint;
+    private Vector3 EndingPoint;
 
     // Where the CoordsToBinary object returns a string which is a 4bit binary, translate that to decimal and use that as an index to search this array for the GameObject tile of which their are exactly 16.
     private GameObject[] TileGameObjects;
@@ -99,11 +101,6 @@ public class MazeBuilder : MonoBehaviour
         TileRotations[15] = 0;
 
         // BuildMaze();
-    }
-
-    private void Start()
-    {
-        
     }
 
     // Update is called once per frame
@@ -183,8 +180,7 @@ public class MazeBuilder : MonoBehaviour
     private void SpawnInMaze(Dictionary<Tuple<int,int>, string> mazeAsCoords)
     {
         ArrayList CulDuSacs = new ArrayList();
-
-        Debug.Log(MazeName + " " + ParentPosition);
+        ArrayList PossibleStartingPoints = new ArrayList();
 
         // For each cell in the maze
         for (int row_index = 0; row_index < MazeSize; row_index++)
@@ -201,21 +197,24 @@ public class MazeBuilder : MonoBehaviour
                 GameObject tile = Instantiate
                 (
                     CurrentTile, 
-                    (new Vector3(  (row_index ) * TileSize,   0, (col_index) * TileSize)) + ParentPosition, 
+                    ((new Vector3(  (row_index ) * TileSize,   0, (col_index) * TileSize)) + ParentPosition) * Scale, // (Coordinate * TileSize) + local position all times Scale
                     Quaternion.identity
                 );
-
-                // Debug.Log(row_index+":"+col_index+" - "+tile.name + " " + TileRotations[binAsDecimal] + " " + binary_);
+                tile.transform.localScale = new Vector3(Scale,Scale,Scale);
 
                 tile.name = "Maze Tile @ " + row_index+":"+col_index;
                 tile.transform.parent = GameObject.Find("Maze " + MazeNumber).transform;
                 tile.transform.Rotate(0, TileRotations[binAsDecimal], 0);
-                 
+                
+                // If this tile is a Cul De Sac, then add it to the array so it may be a candidate for the end of the maze.
                 if (binary_ == "0111" || binary_ == "1011" || binary_ == "1101" || binary_ == "1110")
                 {
                     // Give this array both the GameObject and it's angle.
                     CulDuSacs.Add( new Tuple<GameObject,int> (tile, StrBinaryToDecimal(binary_)));
                 }
+                // Add all tiles to the possible starting points, to pick NEARLY randomly after.
+                PossibleStartingPoints.Add(tile);
+
             }
         } 
 
@@ -242,26 +241,41 @@ public class MazeBuilder : MonoBehaviour
             EndPosition,
             Quaternion.identity
         );
+        EndTile.transform.localScale = new Vector3(Scale,Scale,Scale);
         EndTile.transform.Rotate(0, TileRotations[GOandAngle.Item2],0);
+        EndTile.transform.parent = GameObject.Find("Maze " + MazeNumber).transform;
+        EndingPoint = EndTile.transform.position;
 
-        // This randomly chooses a starting point larger than half the MazeSize away from the end as the crow flies.
-        for (int while_i = 0; while_i < 4*Mathf.Pow(MazeSize, MazeSize) ; while_i++)
+        // Choose a starting point at random.
+        // Buuut make sure it is of sufficient distance away from the end.
+        //      As the crow flies.
+        for (int count = 0; count < MazeSize*MazeSize || PossibleStartingPoints.Count <= 0; count++)
         {
-            // Grab a random coordinate.
-            int rand_x = choose.Next(MazeSize);
-            int rand_z = choose.Next(MazeSize);
-            // Calc distance between it and end.
-            float distance = Mathf.Sqrt( Mathf.Pow(EndTile.transform.position.x - rand_x,2) + Mathf.Pow(EndTile.transform.position.z - rand_z, 2));
-            // If it is larger than or equal to half the crow fly distance then keep it and break.
-            if (distance >= MazeSize/2)
+            int check = choose.Next(PossibleStartingPoints.Count);
+            Vector3 possibleStartingPoint = ((GameObject) PossibleStartingPoints[check]).transform.position;
+
+            // Calc distance between possible start and end.
+            float distance = 
+                Mathf.Sqrt
+                ( 
+                   Mathf.Pow( EndTile.transform.position.x - possibleStartingPoint.x, 2) 
+                   + 
+                   Mathf.Pow( EndTile.transform.position.z - possibleStartingPoint.z, 2) 
+                );
+
+            // If this possible starting point is more than or equal to half the length of the maze...
+            if (distance >= ((float)MazeSize)/2f)
             {
-                StartingPoint = new Vector3(rand_x,0, rand_z);
+                // ... then choose it as the starting point.
+                StartingPoint = possibleStartingPoint + new Vector3(0,0.2f,0);
                 break;
             }
         }
-
-        // Debug.Log(StartingPoint);
-
+        if (StartingPoint == null)
+        {
+            StartingPoint = Vector3.zero;
+            Debug.Log("There was a problem setting the starting point for the " + MazeName);
+        }
     }
 
     private int StrBinaryToDecimal(string bin)
@@ -281,10 +295,26 @@ public class MazeBuilder : MonoBehaviour
         return decimalReturn;
     }
 
-    public Vector3 GetStartingPoint()
+    public Vector3 GetStartOfMaze()
     {
         if (StartingPoint == null) throw new Exception("Access to the starting point of Maze #" + MazeNumber + " was attempted but the maze hasn't been generated yet.");
-        return StartingPoint;
+        return StartingPoint + new Vector3(0,0.2f,0);
+    }
+    public Vector3 GetEndOfMaze()
+    {
+        return EndingPoint;
+    }
+
+    public void ResetMaze()
+    {
+        // Delete every tile. Tiles are stored in this parent.
+        GameObject parent = GameObject.Find("Maze " + MazeNumber);
+        while (parent.transform.childCount > 0)
+        {
+            DestroyImmediate(parent.transform.GetChild(0).gameObject);
+        }
+        // Build the new maze.
+        BuildMaze();
     }
 
     private class MazeDictionary : Dictionary<Tuple<int, int>, string>
