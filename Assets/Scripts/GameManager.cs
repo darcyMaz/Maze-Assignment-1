@@ -41,9 +41,19 @@ public class GameManager : MonoBehaviour
     public Teleporter teleporter2;
     public Teleporter teleporter3;
 
+    // Canvases
+    public Canvas PauseMenu;
+    public Canvas WinMenu;
+
+    // Final reset bool
+    private bool GameWonReset;
+    private bool OneTimeWinBool;
 
     void Start()
     {
+        GameWonReset = false;
+        OneTimeWinBool = true;
+
         // Get Player components.
         player = player_go.GetComponent<Player>();
         player_cc = player_go.GetComponent<CharacterController>();
@@ -85,7 +95,6 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
         
         // Check if keys are collected or not and tell the endzone, so it knows the game could end.
         // Fourth term is so that this statement is not constantly true when the keys are all collected which would constantly call this function.
@@ -102,8 +111,17 @@ public class GameManager : MonoBehaviour
         // If you reach the EndZone having collected all of the keys, you win!
         if (endzone.IsGameOver())
         {
-            Debug.Log("You collected all the keys and returned to the EndZone. You won this game!");
-            ResetGame();
+            if (OneTimeWinBool)
+            {
+                // Teleport to win spot
+                player.SetPosition(new Vector3(-139, 0.2f, 30));
+                // Show canvas congratulating
+                WinMenu.gameObject.SetActive(true);
+                OneTimeWinBool = false;
+            }
+
+            // Debug.Log("You collected all the keys and returned to the EndZone. You won this game!");
+            if (GameWonReset) { GameWonReset = false; ResetGame(); }
         }
 
         // This will only run once, upon the collection of Key1.
@@ -126,6 +144,15 @@ public class GameManager : MonoBehaviour
             teleporter3.TeleportSwitch(false);
             player.ResetPlayer();
         }
+
+        
+        // Pause Menu
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            PauseMenu.gameObject.SetActive(true);
+            Time.timeScale = 0;
+        }
+        
 
         /*
         // If the player's health goes below zero, the whole game is reset. You lose :(
@@ -175,6 +202,21 @@ public class GameManager : MonoBehaviour
         teleporter1.TeleportSwitch(true);
         teleporter2.TeleportSwitch(true);
         teleporter3.TeleportSwitch(true);
+        GameWonReset = false;
     }
 
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
+
+    public void TimeScaleOne()
+    {
+        Time.timeScale = 1;
+    }
+
+    public void GameWonResetTrue()
+    {
+        GameWonReset = true;
+    }
 }
