@@ -14,12 +14,19 @@ public class MazeEntranceTrigger : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        if (other.name == "Player")
-        {
-            CanClick = true;
-        }
+        //if (other.name == "Player")
+        //{
+        //    CanClick = true;
+        //}
+        
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.name == "Player") me.DoorApproached(true);
+    }
+
+    /*
     private void OnMouseDown()
     {
         if (CanClick)
@@ -27,10 +34,13 @@ public class MazeEntranceTrigger : MonoBehaviour
             me.DoorCanTransition();
         }
     }
+    */
 
     private void OnTriggerExit(Collider other)
     {
-        me.DoorCannotTransition();
-        CanClick = false;
+        //me.DoorCannotTransition();
+        //CanClick = false;
+
+        if (other.name == "Player") me.DoorApproached(false);
     }
 }

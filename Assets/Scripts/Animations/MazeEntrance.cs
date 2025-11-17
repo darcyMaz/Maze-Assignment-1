@@ -11,6 +11,9 @@ public class MazeEntrance : MonoBehaviour
     float animationCountdownLength;
     float animationCountdown;
 
+    bool IsDoorApproached;
+    bool IsDoorClicked;
+
     void Start()
     {
         myAnimator = GetComponent<Animator>();
@@ -19,17 +22,28 @@ public class MazeEntrance : MonoBehaviour
         isTransitioning = false;
         animationCountdownLength = 1.5f;
         animationCountdown = animationCountdownLength;
+
+        IsDoorApproached = false;
+        IsDoorClicked = false;
     }
 
     void Update()
     {
+        /*
         if (canTransition && !isTransitioning)
         {
             // Debug.Log("canTransition plus istransitioning is false");
             if (!isOpen) { OpenDoor(); isOpen = true; }
-            else { CloseDoor(); isOpen = false;
+            else { CloseDoor(); isOpen = false; }
         }
+        */
+
+        if (!isTransitioning && IsDoorApproached && IsDoorClicked)
+        {
+            if (!isOpen) { OpenDoor(); isOpen = true; }
+            else { CloseDoor(); isOpen = false; }
         }
+
 
         if (isTransitioning)
         {
@@ -40,6 +54,8 @@ public class MazeEntrance : MonoBehaviour
             animationCountdown = animationCountdownLength;
             isTransitioning = false;
         }
+
+        IsDoorClicked = false;
     }
 
     public void DoorCanTransition()
@@ -49,6 +65,15 @@ public class MazeEntrance : MonoBehaviour
     public void DoorCannotTransition()
     {
         canTransition = false;
+    }
+
+    public void DoorClicked()
+    {
+        IsDoorClicked = true;
+    }
+    public void DoorApproached(bool isApproached)
+    {
+        IsDoorApproached = isApproached;
     }
 
     public void OpenDoor()
