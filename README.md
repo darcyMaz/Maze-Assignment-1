@@ -1,3 +1,5 @@
+DOWNLOAD THE GAME FOR FREE OVER AT ITCH.IO! HERE'S THE LINK (!!!): 
+
 This is my submission for the Maze Assignment in Introduction to Video Gaming in the Dawson Indie Video Game Design Program. Fall 2025.
 
 Everything in this project except for the music was made by me, Darcy Mazloum. We can thank Mozart for the background music.
