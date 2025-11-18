@@ -6,9 +6,7 @@ Everything in this project except for the music was made by me, Darcy Mazloum. W
 
 Control the character with WASD and use your mouse click to open some doors.
 
-Sometimes the doors in the "Hub World" which you have to click on to open are a little finnicky. You'll have to move the player around a bit and click a few times if it doesn't open.
-
-Otherwise, the game runs perfectly with no bugs. At least that I know of.
+No bugs that I know of.
 
 There are three kinds of trigger zones which activate animations.
 (1) There are three maze entrances in the "Hub World" which open when the player is inside of an invisible zone next to the door AND the player mouse clicks on that zone (this is the finnicky door).
